@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import App from './App';
+import KazudokuApp from './KazudokuApp';
 
 ReactDom.render((
-  <App/>
+  <KazudokuApp/>
 ), document.getElementById('root'));

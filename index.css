@@ -1,0 +1,88 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Hiragino Kaku Gothic Pro", Meiryo;
+  text-rendering: optimizeLegibility;
+  background: #1c4961;
+  color: white;
+}
+
+.sidebar {
+  float: left;
+  padding: 0 40px;
+}
+.header {
+  font-size: 3em;
+  line-height: 1.2em;
+}
+.subheader {
+  font-size: 1.2em;
+  color: #fffa90;
+}
+
+.game-container {
+  text-align: center;
+  margin: 40px;
+  padding: 40px 0;
+}
+.game-board {
+  display: table;
+  margin: auto;
+  background-color: #1090ac;
+  border: 2px solid #3988b0;
+  border-radius: 4px;
+}
+.game-row {
+  display: table-row;
+}
+.game-cell {
+  display: table-cell;
+}
+.game-row.border-top > .game-cell {
+  border-top: 1px solid #005b68;
+}
+.game-row.border-bottom > .game-cell {
+  border-bottom: 1px solid #005b68;
+}
+.game-cell.border-left {
+  border-left: 1px solid #005b68;
+}
+.game-cell.border-right {
+  border-right: 1px solid #005b68;
+}
+.game-cell-inner {
+  padding: 10px 4px;
+  width: 40px;
+  background-color: #0f7aa9;
+  border: 1px solid #1090ac;
+  border-radius: 4px;
+  color: white;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.middle .game-cell-inner {
+  background-color: #0970a0;
+}
+.center > .game-cell-inner {
+  background-color: #0970a0;
+}
+.middle > .center > .game-cell-inner {
+  background-color: #0f7aa9;
+}
+.game-cell-inner:hover {
+  background-color: #00638b !important;
+}
+
+.game-cell-edit-box {
+  width: 32px;
+  border: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 1.2em;
+  background: none;
+  outline: none;
+  color: white;
+}
