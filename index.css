@@ -9,9 +9,16 @@ body {
   color: white;
 }
 
+.mtl { margin-top: 20px; }
+.mbm { margin-bottom: 10px; }
+.mlm { margin-left: 10px; }
+.inline-block { display: inline-block; }
+.pull-right { float: right; }
+
 .sidebar {
   float: left;
   padding: 0 40px;
+  text-align: center;
 }
 .header {
   font-size: 3em;
@@ -19,13 +26,33 @@ body {
 }
 .subheader {
   font-size: 1.2em;
-  color: #fffa90;
+  color: #fffba7;
+}
+.controls {
+  width: 152px;
+  margin-bottom: 10px;
+}
+button {
+  border: 1px solid #44c0d2;
+  border-radius: 4px;
+  background: #215fa5;
+  color: white;
+  font-size: 14px;
+  padding: 3px 7px;
+  cursor: pointer;
+}
+button:hover {
+  background: #2669b5;
+}
+button.full {
+  display: block;
+  width: 100%;
 }
 
 .game-container {
   text-align: center;
   margin: 40px;
-  padding: 40px 0;
+  padding-bottom: 40px;
 }
 .game-board {
   display: table;
@@ -33,6 +60,10 @@ body {
   background-color: #1090ac;
   border: 2px solid #3988b0;
   border-radius: 4px;
+}
+.game-board.complete {
+  border: 2px solid #55b039;
+  background-color: #50947b;
 }
 .game-row {
   display: table-row;
@@ -63,6 +94,9 @@ body {
   font-size: 1.2em;
   font-weight: bold;
 }
+.game-board.complete .game-cell-inner {
+  border: 1px solid #50947b;
+}
 .middle .game-cell-inner {
   background-color: #0970a0;
 }
@@ -75,6 +109,14 @@ body {
 .game-cell-inner:hover {
   background-color: #00638b !important;
 }
+.game-cell.static > .game-cell-inner {
+  /*color: #aff6ff;*/
+  color: #fffba7;
+  cursor: default;
+}
+.game-cell.error > .game-cell-inner {
+  color: #de4a38;
+}
 
 .game-cell-edit-box {
   width: 32px;
@@ -85,4 +127,9 @@ body {
   background: none;
   outline: none;
   color: white;
+}
+
+.win-text {
+  color: #7cff55;
+  font-weight: bold;
 }

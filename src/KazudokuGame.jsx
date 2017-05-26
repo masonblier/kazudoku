@@ -1,20 +1,44 @@
 import React from 'react';
-import KazudokuModel from './KazudokuModel';
 
 export default class KazudokuGame extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      cells: KazudokuModel.makeCells(),
+      cells: props.model.getCells(),
+      complete: props.model.getComplete(),
       editing: null,
     };
   }
 
+  modelListener = () => this.setState({
+    cells: this.props.model.getCells(),
+    complete: this.props.model.getComplete(),
+  });
+
+  componentDidMount() {
+    this.props.model.subscribe(this.modelListener);
+  }
+  componentWillUnmount() {
+    this.props.model.unsubscribe(this.modelListener);
+  }
+  componentWillReceiveProps(newProps) {
+    this.props.model.unsubscribe(this.modelListener);
+    this.setState({
+      cells: newProps.model.getCells(),
+      complete: newProps.model.getComplete(),
+    });
+    newProps.model.subscribe(this.modelListener);
+  }
+
   render() {
-    const {cells} = this.state;
+    const {cells, complete} = this.state;
+    const extraClass = (complete ? 'complete ' : '');
     return (
-      <div className="game-board">
-        {cells.map(this.renderRow)}
+      <div className="inline-block">
+        <div className="mtl mbm win-text">{complete ? 'You Win!' : '　'}</div>
+        <div className={'game-board ' + extraClass}>
+          {cells.map(this.renderRow)}
+        </div>
       </div>
     );
   }
@@ -32,25 +56,26 @@ export default class KazudokuGame extends React.Component {
   }
 
   renderCell = (cell, idx) => {
+    const {model} = this.props;
     const extraClass =
       (idx % 3 === 0 ? 'border-left ' : '') +
       (idx % 3 === 2 ? 'border-right ' : '') +
-      (idx >= 3 && idx < 6 ? 'center ' : '');
+      (idx >= 3 && idx < 6 ? 'center ' : '') +
+      (cell.error ? 'error ' : '') +
+      (cell.static ? 'static ' : '');
     const cellIdxStr = `${cell.row},${cell.col}`;
     return (
       <div className={'game-cell ' + extraClass}>
         <div className="game-cell-inner"
-          onClick={() => this.setState({editing: cellIdxStr})}
+          onClick={cell.static ? null : () => this.setState({editing: cellIdxStr})}
         >
           {(this.state.editing === cellIdxStr) ?
             <CellEditor
-              value={cell.value}
-              onChange={(value) => this.setState({
-                cells: KazudokuModel.updateCell(this.state.cells, cell, value),
-              })}
+              value={cell.value || ''}
+              onChange={(value) => model.updateCell(cell, value)}
               onDone={() => this.setState({editing: null})}
             />
-          : cell.value}
+          : (cell.value || '　')}
         </div>
       </div>
     );
