@@ -49,10 +49,23 @@ button.full {
   width: 100%;
 }
 
+.footer {
+  text-align: center;
+  margin: 20px auto;
+  font-size: 0.7em;
+  opacity: 0.8;
+  max-width: 600px;
+}
+.footer a {
+  color: #eee;
+}
+.footer a:hover {
+  color: #ccc;
+}
+
 .game-container {
   text-align: center;
   margin: 40px;
-  padding-bottom: 40px;
 }
 .game-board {
   display: table;
