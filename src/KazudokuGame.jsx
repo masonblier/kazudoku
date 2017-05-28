@@ -7,6 +7,7 @@ export default class KazudokuGame extends React.Component {
       cells: props.model.getCells(),
       complete: props.model.getComplete(),
       editing: null,
+      checking: false,
     };
   }
 
@@ -14,30 +15,50 @@ export default class KazudokuGame extends React.Component {
     cells: this.props.model.getCells(),
     complete: this.props.model.getComplete(),
   });
+  checkingListener = (checking) => {
+    if (checking) {
+      this.setState({checking});
+    }
+  };
+  clearChecking = (ref) => {
+    setTimeout(() => {
+      ref.style.opacity = 0;
+      setTimeout(() => this.setState({checking: false}), 600);
+    }, 10);
+  };
 
   componentDidMount() {
     this.props.model.subscribe(this.modelListener);
+    this.props.model.subscribeChecking(this.checkingListener);
   }
   componentWillUnmount() {
     this.props.model.unsubscribe(this.modelListener);
+    this.props.model.unsubscribeChecking(this.checkingListener);
   }
   componentWillReceiveProps(newProps) {
     this.props.model.unsubscribe(this.modelListener);
+    this.props.model.unsubscribeChecking(this.checkingListener);
     this.setState({
       cells: newProps.model.getCells(),
       complete: newProps.model.getComplete(),
+      checking: false,
+      editing: false,
     });
     newProps.model.subscribe(this.modelListener);
+    newProps.model.subscribeChecking(this.checkingListener);
   }
 
   render() {
-    const {cells, complete} = this.state;
+    const {cells, checking, complete} = this.state;
     const extraClass = (complete ? 'complete ' : '');
     return (
       <div className="inline-block">
         <div className="mtl mbm win-text">{complete ? 'You Win!' : '　'}</div>
         <div className={'game-board ' + extraClass}>
           {cells.map(this.renderRow)}
+          {checking ?
+            <div className="checking-overlay" ref={(r) => r && this.clearChecking(r)}></div>
+          : null}
         </div>
       </div>
     );

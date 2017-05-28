@@ -15,6 +15,7 @@ export default class KazudokuModel {
 
   constructor(boardData) {
     this.cells = KazudokuModel.makeCells(boardData);
+    this.numberCounts = {};
     this.complete = false;
     this._subscribers = [];
   }
@@ -32,11 +33,21 @@ export default class KazudokuModel {
     this._subscribers.forEach((listener) => listener());
   }
 
+  subscribeChecking(listener) {
+    this.checkingListener = listener;
+  }
+  unsubscribeChecking(listener) {
+    this.checkingListener = null;
+  }
+
   getCells() {
     return this.cells;
   }
   getComplete() {
     return this.complete;
+  }
+  getNumberCounts() {
+    return this.numberCounts;
   }
 
   updateCell({row, col}, value) {
@@ -69,22 +80,35 @@ export default class KazudokuModel {
     this.cells = newCells;
   }
   checkCells() {
+    if (this.checkingListener) {
+      this.checkingListener(true);
+    }
+
     this._resetCells();
 
     let complete = true;
+    this.numberCounts = {};
     const newCells = this.cells.map((row, rowIdx) => {
       return row.map((cell, colIdx) => {
         let error = false;
 
-        if (!cell.value) {
+        if (cell.value) {
+          if (!this.numberCounts[cell.value]) {
+            this.numberCounts[cell.value] = {count: 0};
+          }
+          this.numberCounts[cell.value].count += 1;
+        }
+        if (!cell.value && complete) {
           complete = false;
         }
+
         if (cell.value && !cell.static) {
           // row check
           error = error || this.cells[rowIdx].reduce((a, c, idx) => {
             if (idx !== colIdx) {
               if (c.value === cell.value) {
                 a = true;
+                this.numberCounts[cell.value].error = true;
               }
             }
             return a;
@@ -95,6 +119,7 @@ export default class KazudokuModel {
             if (rIdx !== rowIdx) {
               if (row[colIdx].value === cell.value) {
                 a = true;
+                this.numberCounts[cell.value].error = true;
               }
             }
             return a;
@@ -111,6 +136,7 @@ export default class KazudokuModel {
               if (rIdx !== rowIdx && cIdx !== colIdx) {
                 if (c.value === cell.value) {
                   a = true;
+                  this.numberCounts[cell.value].error = true;
                 }
               }
               return a;
@@ -129,6 +155,10 @@ export default class KazudokuModel {
     this.cells = newCells;
     this.complete = complete;
     this.emitUpdate();
+
+    if (this.checkingListener) {
+      this.checkingListener(false);
+    }
 
     return newCells;
   }
