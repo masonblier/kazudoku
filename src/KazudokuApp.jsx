@@ -1,5 +1,4 @@
 import React from 'react';
-import SudokuPuzzles from './SudokuPuzzles';
 import KazudokuModel from './KazudokuModel';
 import KazudokuGame from './KazudokuGame';
 import KazudokuSidebar from './KazudokuSidebar';
@@ -8,7 +7,7 @@ export default class KazudokuApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      model: new KazudokuModel(SudokuPuzzles.nextEasy()),
+      model: KazudokuModel.next('easy'),
     };
   }
 

@@ -1,8 +1,32 @@
+import PuzzleData from './PuzzleData';
+
 export default class KazudokuModel {
-  static makeCells(boardData = []) {
+  static puzzleIdxs = {easy: -1, hard: -1};
+
+  static next(mode, allowCompleted = false) {
+    let nextIdx = (++KazudokuModel.puzzleIdxs[mode]) % PuzzleData[mode].length;
+
+    const saveData = KazudokuModel.getSaveData();
+    if (saveData && !allowCompleted) {
+      while (nextIdx < PuzzleData[mode].length && saveData[mode][1 + nextIdx]) {
+        nextIdx++;
+      }
+      nextIdx = nextIdx % PuzzleData[mode].length;
+      KazudokuModel.puzzleIdxs[mode] = nextIdx;
+    }
+
+    return new KazudokuModel({
+      id: 1 + nextIdx,
+      mode: mode,
+      cellData: PuzzleData[mode][nextIdx],
+      alreadyCompleted: (saveData && saveData[mode][1 + nextIdx]),
+    })
+  }
+
+  static makeCells(cellData = []) {
     return [...Array(9)].map((_, rowIdx) => {
       return [...Array(9)].map((_, colIdx) => {
-        const nValue = parseInt(boardData[rowIdx * 9 + colIdx], 10) || null;
+        const nValue = parseInt(cellData[rowIdx * 9 + colIdx], 10) || null;
         return {
           value: nValue,
           row: rowIdx,
@@ -13,10 +37,33 @@ export default class KazudokuModel {
     });
   }
 
-  constructor(boardData) {
-    this.cells = KazudokuModel.makeCells(boardData);
+  static getSaveData() {
+    let saveData = null;
+    if (localStorage) {
+      const dataStr = localStorage['kazudoku-data'];
+      try {
+        saveData = JSON.parse(dataStr);
+      } catch (e) {
+      }
+    }
+    return saveData;
+  }
+  static setSaveData(saveData) {
+    if (localStorage) {
+      try {
+        localStorage['kazudoku-data'] = JSON.stringify(saveData);
+      } catch (e) {
+      }
+    }
+  }
+
+  constructor(options) {
+    this.id = options.id;
+    this.mode = options.mode;
+    this.cells = KazudokuModel.makeCells(options.cellData);
     this.numberCounts = {};
     this.complete = false;
+    this.alreadyCompleted = options.alreadyCompleted;
     this._subscribers = [];
   }
 
@@ -40,6 +87,9 @@ export default class KazudokuModel {
     this.checkingListener = null;
   }
 
+  getId() {
+    return this.id;
+  }
   getCells() {
     return this.cells;
   }
@@ -155,6 +205,14 @@ export default class KazudokuModel {
     this.cells = newCells;
     this.complete = complete;
     this.emitUpdate();
+
+    if (this.complete) {
+      const saveData = KazudokuModel.getSaveData() || {easy: {}, hard: {}};
+      if (!saveData[this.mode][this.id]) {
+        saveData[this.mode][this.id] = true;
+        KazudokuModel.setSaveData(saveData);
+      }
+    }
 
     if (this.checkingListener) {
       this.checkingListener(false);

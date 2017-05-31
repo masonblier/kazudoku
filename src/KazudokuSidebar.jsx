@@ -1,5 +1,4 @@
 import React from 'react';
-import SudokuPuzzles from './SudokuPuzzles';
 import KazudokuModel from './KazudokuModel';
 
 export default class KazudokuSidebar extends React.Component {
@@ -42,10 +41,10 @@ export default class KazudokuSidebar extends React.Component {
           </div>
           <div className="mtl">
             <span>New:</span>
-            <button className="mlm" onClick={() => setModel(new KazudokuModel(SudokuPuzzles.nextEasy()))}>
+            <button className="mlm" onClick={() => setModel(KazudokuModel.next('easy', true))}>
               Easy
             </button>
-            <button className="mlm pull-right" onClick={() => setModel(new KazudokuModel(SudokuPuzzles.nextHard()))}>
+            <button className="mlm pull-right" onClick={() => setModel(KazudokuModel.next('hard', true))}>
               Hard
             </button>
           </div>

@@ -49,11 +49,16 @@ export default class KazudokuGame extends React.Component {
   }
 
   render() {
+    const {model} = this.props;
     const {cells, checking, complete} = this.state;
     const extraClass = (complete ? 'complete ' : '');
     return (
       <div className="inline-block">
-        <div className="mtl mbm win-text">{complete ? 'You Win!' : '　'}</div>
+        <div className="mtl mbm type-bold">
+          {model.alreadyCompleted ? <span className='win-text'>✓ </span> : '　'}
+          <span>Game #{model.getId()}</span>
+          {complete ? <span className='win-text'> You Win!</span> : '　'}
+        </div>
         <div className={'game-board ' + extraClass}>
           {cells.map(this.renderRow)}
           {checking ?
