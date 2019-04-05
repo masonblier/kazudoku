@@ -3,6 +3,8 @@ kazudoku
 
 JavaScript / React Implementation of Number Place
 
+https://masonblier.github.io/kazudoku
+
 Reference
 ---
 Easy puzzles sampled from [Project Euler #96](https://projecteuler.net/problem=96). Hard puzzles sampled from [Gordon Royle's Minimum Sudoku file](http://staffhome.ecm.uwa.edu.au/~00013890/sudokumin.php).
